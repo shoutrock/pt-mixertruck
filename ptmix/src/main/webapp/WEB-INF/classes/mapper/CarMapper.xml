@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ptmix.store.mapper.CarMapper">
+	
+	<resultMap type="Car" id="resultmap-car">
+		<result column="usid" property="usid"/>
+		<result column="manufacturer" property="manufacturer" typeHandler="ManufacturerTypeHandler" />
+		<result column="productionDate" property="productionDate"/>
+		<result column="name" property="name"/>
+	</resultMap>
+	<!-- 차량 전체 목록 조회 -->
+	<select id="selectAllCars" resultMap="resultmap-car">
+		SELECT usid, manufacturer, productionDate, name 
+		  FROM car
+	</select>
+	
+	<resultMap type="Purchase" id="result-map-purchase">
+		<result property="usid" column="usid" typeHandler="NumberToStringHandler" />
+		<result property="purchaseDate" column="purchaseDate" />
+		<result property="amount" column="amount" />
+		<result property="declaredAmount" column="declaredAmount" />
+		<result property="carId" column="carId" typeHandler="NumberToStringHandler" />
+		<result property="seller.usid" column="sellerId" typeHandler="NumberToStringHandler" />
+		<result property="seller.name" column="sellerName" />
+	</resultMap>
+	<!-- 구매내역 조회 -->
+	<select id="selectPurchase" parameterType="string" resultMap="result-map-purchase">
+		SELECT p.usid
+		       , p.purchaseDate
+		       , p.amount
+		       , p.declaredAmount
+		       , p.carId
+		       , c.usid AS sellerId
+		       , c.name AS sellerName
+		  FROM purchase p INNER JOIN customer c ON p.sellerId = c.usid
+		 WHERE carId = #{carId}
+	</select>
+	
+	<resultMap type="Sell" id="result-map-sell">
+		<result property="usid" column="usid" typeHandler="NumberToStringHandler" />
+		<result property="sellDate" column="sellDate" />
+		<result property="amount" column="amount" />
+		<result property="declaredAmount" column="declaredAmount" />
+		<result property="carId" column="carId" typeHandler="NumberToStringHandler" />
+		<result property="buyer.usid" column="buyerId" typeHandler="NumberToStringHandler" />
+		<result property="buyer.name" column="buyerName" />
+	</resultMap>
+	<!-- 판매내역 조회 -->
+	<select id="selectSell" parameterType="string" resultMap="result-map-sell">
+		SELECT s.usid
+		       , s.sellDate
+		       , s.amount
+		       , s.declaredAmount
+		       , s.carId
+		       , c.usid AS buyerId
+		       , c.name AS buyerName
+		  FROM sell s INNER JOIN customer c ON s.buyerId = c.usid
+		 WHERE carId = #{carId}
+	</select>
+
+	<!-- 유지보수내역 조회 -->
+	<select id="selectMaintenances" parameterType="string" resultType="Maintenance">
+		SELECT usid, item, amount, inspectionDate, carId
+		  FROM maintenance
+		 WHERE carId = #{carId}
+	</select>
+	
+	<!-- 차량 등록 -->
+	<insert id="insertCar" parameterType="Car" useGeneratedKeys="true" keyProperty="usid">
+		INSERT INTO car (usid, manufacturer, productionDate, name)
+		VALUES (#{usid}
+		        ,#{manufacturer, typeHandler=ManufacturerTypeHandler}
+				,#{productionDate}
+				,#{name})
+	</insert>
+	
+	<insert id="insertPurchase" parameterType="Purchase">
+		INSERT INTO purchase (purchaseDate, amount, carId)
+		VALUES (#{purchaseDate}, #{amount}, #{carId})
+	</insert>
+	
+	<insert id="insertSell" parameterType="Sell">
+		INSERT INTO sell (sellDate, amount, declaredDate, carId)
+		VALUES (#{sellDate}, #{amount}, #{declaredDate}, #{carId})
+	</insert>
+	
+	<insert id="insertMaintenance" parameterType="Maintenance" useGeneratedKeys="true" keyProperty="usid">
+		INSERT INTO maintenance (usid, item, amount, inspectionDate, carId)
+		VALUES (#{usid}, #{item}, #{amount}, #{inspectionDate}, #{carId})
+	</insert>
+	
+	<update id="updatePurchase" parameterType="Purchase">
+		UPDATE purchase
+		   SET purchaseDate = #{purchaseDate}
+		       ,amount = #{amount}
+		 WHERE carId = #{carId}
+	</update>
+	
+	<update id="updateSell" parameterType="Sell">
+		UPDATE sell
+		   SET sellDate = #{sellDate}
+		       ,amount = #{amount}
+		       ,declaredDate = #{declaredDate}
+		 WHERE carId = #{carId}
+	</update>
+	
+	<update id="updateMaintenance" parameterType="Maintenance">
+		UPDATE maintenance
+		   SET item = #{item}
+		       ,amount = #{amount}
+		       ,inspectionDate = #{inspectionDate}
+		 WHERE carId = #{carId}
+	</update>
+	
+	<select id="selectCarsByKey" parameterType="CarSearchKey">
+		SELECT usid, manufacturer, productionDate, name 
+		  FROM car
+		<if test="dateType != null">
+			<choose>
+				<when test="dateType == 'Purchase'">
+					
+				</when>
+				<when test="dateType =='Sell'">
+				</when>
+			</choose>
+		</if>
+		<if test="customerType != null">
+			<choose>
+				<when test="customerType == 'Buyer'">
+				</when>
+				<when test="customerType == 'Seller'">
+				</when>
+			</choose>
+		</if>
+	</select>
+
+    <select id="selectCar" parameterType="string" resultMap="resultmap-car">
+        SELECT usid, manufacturer, productionDate, name
+          FROM car
+         WHERE usid = #{carId}
+    </select>
+
+</mapper>
+
+
+
+
+
+
+

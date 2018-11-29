@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ptmix.store.mapper.CustomerMapper">
+	
+	<resultMap type="Customer" id="result-map-customer">
+		<result property="usid" column="usid" typeHandler="NumberToStringHandler" />
+		<result property="name" column="name" />
+		<result property="juminNo" column="juminNo" />
+		<result property="phone" column="phone" />
+		<result property="address" column="address" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<resultMap type="CustomerTouch" id="result-map-customer-touch">
+		<result property="usid" column="usid" typeHandler="NumberToStringHandler" />
+		<result property="customerId" column="customerId" />
+		<result property="meetDate" column="meetDate" />
+		<result property="contents" column="contents" />
+	</resultMap>
+	
+	<!-- 고객조회 -->
+	<select id="select" parameterType="string" resultMap="result-map-customer">
+		SELECT usid, name, juminNo, phone, address, remark
+		  FROM customer
+		 WHERE usid = #{customerId}
+	</select>
+	
+	<!-- 전체고객조회 -->
+	<select id="selectAll" resultMap="result-map-customer">
+		SELECT usid, name, juminNo, phone, address, remark
+		  FROM customer
+		 ORDER BY name
+	</select>
+
+	<!-- 고객등록 -->	
+	<insert id="insert" parameterType="Customer" useGeneratedKeys="true" keyProperty="usid">
+		INSERT INTO customer (usid, name, juminNo, phone, address, remark)
+		VALUES (#{usid}, #{name}, #{juminNo}, #{phone}, #{address}, #{remark})
+	</insert>
+	
+	<!-- 전체고객조회 -->
+	<select id="selectByName" parameterType="string" resultMap="result-map-customer">
+		SELECT usid, name, juminNo, phone, address, remark
+		  FROM customer
+		 WHERE name LIKE #{name}
+		 ORDER BY name
+	</select>
+
+	<!-- 고객터치등록 -->
+	<insert id="insertTouch" parameterType="CustomerTouch" useGeneratedKeys="true" keyProperty="usid">
+		INSERT INTO customer_touch (usid, customerId, meetDate, contents)
+		VALUES (#{usid}, #{customerId}, #{meetDate}, #{contents})
+	</insert>
+
+	<select id="selectTouches" parameterType="string" resultMap="result-map-customer-touch">
+		SELECT usid, customerId, meetDate, contents
+		  FROM customer_touch
+		 WHERE customerId = #{customerId}
+		 ORDER BY meetDate DESC
+	</select>
+</mapper>
+
+
+
+
+
+
+

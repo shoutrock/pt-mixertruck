@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.ptmix.domain.Car" alias="Car"/>
+		<typeAlias type="com.ptmix.domain.Customer" alias="Customer"/>
+		<typeAlias type="com.ptmix.domain.Maintenance" alias="Maintenance"/>
+		<typeAlias type="com.ptmix.domain.Purchase" alias="Purchase"/>
+		<typeAlias type="com.ptmix.domain.Sell" alias="Sell"/>
+		<typeAlias type="com.ptmix.domain.Manufacturer" alias="Manufacturer"/>
+		<typeAlias type="com.ptmix.domain.search.CarSearchKey" alias="CarSearchKey"/>
+		<typeAlias type="com.ptmix.domain.CustomerTouch" alias="CustomerTouch"/>
+		<typeAlias type="com.ptmix.store.handler.ManufacturerTypeHandler" alias="ManufacturerTypeHandler"/>
+		<typeAlias type="com.ptmix.store.handler.NumberToStringHandler" alias="NumberToStringHandler"/>
+		
+	</typeAliases>
+	
+	<typeHandlers>
+		<typeHandler handler="ManufacturerTypeHandler" javaType="Manufacturer" jdbcType="VARCHAR"/>
+		<typeHandler handler="NumberToStringHandler" javaType="string" jdbcType="NUMERIC"/>
+	</typeHandlers>
+
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="org.mariadb.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://192.168.60.136:3306/ptmixdb"/>
+        <property name="username" value="ptmix"/>
+        <property name="password" value="ptmix"/>
+      </dataSource>
+    </environment>
+  </environments>
+	
+	<mappers>
+		<mapper resource="mapper/CarMapper.xml" />
+		<mapper resource="mapper/CustomerMapper.xml" />
+	</mappers>
+</configuration>
