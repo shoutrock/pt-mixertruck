@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
       <transactionManager type="JDBC"/>
       <dataSource type="POOLED">
         <property name="driver" value="org.mariadb.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://192.168.60.136:3306/ptmixdb"/>
+        <property name="url" value="jdbc:mysql://192.168.0.100:3306/ptmixdb"/>
         <property name="username" value="ptmix"/>
         <property name="password" value="ptmix"/>
       </dataSource>
